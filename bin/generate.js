@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 function lowercaseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
@@ -228,12 +229,15 @@ type ResultType<T, C extends boolean> = C extends true
   const models = extractModels(schema);
   const { hooks, types } = generateCustomHooksForModels(models);
 
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
   fs.writeFileSync(
-    path.join(__dirname, "..", "dist", "hooks.js"),
+    join(__dirname, "..", "dist", "hooks.js"),
     jsImports + hooks
   );
   fs.writeFileSync(
-    path.join(__dirname, "..", "dist", "hooks.d.ts"),
+    join(__dirname, "..", "dist", "hooks.d.ts"),
     tsImports + tsHelpers + types
   );
 
