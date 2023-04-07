@@ -39,7 +39,7 @@ export const handler(req) => {
     model: req.query.model,
     action: req.query.action,
     count: req.query.count ?? false,
-    query: JSON.parse(req.body)
+    query: JSON.parse(req.body),
     db: prisma,
   });
 
