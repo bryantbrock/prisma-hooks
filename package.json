@@ -1,0 +1,30 @@
+{
+  "name": "prisma-hooks",
+  "version": "1.0.0",
+  "description": "100% type-safe, generated react-query hooks for quering any model in your prisma-managed database.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "prisma-hooks": "./bin/generate.ts && tsc --outDir dist"
+  },
+  "scripts": {
+    "build": "tsc --outDir dist"
+  },
+  "keywords": [
+    "prisma",
+    "hooks",
+    "react-query"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@prisma/client": "^4.12.0",
+    "react-query": "^3.39.3",
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.3"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^4.12.0",
+    "react-query": "^3.39.3"
+  }
+}
