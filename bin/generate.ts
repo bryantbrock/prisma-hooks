@@ -37,20 +37,9 @@ function getSingleQuery(
   modelName: string,
   action: string
 ) {
-  return `
-export const ${hookName} = <
-  T extends ${argsType},
-  U = Prisma.${modelName}GetPayload<T>
->({
-  query,
-  options,
-}: {
-  query?: T;
-  options?: Omit<
-  UseQueryOptions<U, { error?: string }, U, QueryKey>,
-  "queryKey" | "queryFn"
->;
-} = {}): UseQueryResult<U, { error?: string }> & { key: QueryKey } => {
+  return {
+    hook: `
+export const ${hookName} = ({ query, options } = {}) => {
   const key = ["${modelName}.${action}", query, options];
 
   const result = useQuery(
@@ -67,7 +56,23 @@ export const ${hookName} = <
 
   return { ...result, key };
 };
-`;
+`,
+    type: `
+export declare const ${hookName} = <
+  T extends ${argsType},
+  U = Prisma.${modelName}GetPayload<T>
+>({
+  query,
+  options,
+  }?: {
+    query?: T;
+    options?: Omit<
+    UseQueryOptions<U, { error?: string }, U, QueryKey>,
+    "queryKey" | "queryFn"
+    >;
+}) => UseQueryResult<U, { error?: string }> & { key: QueryKey };
+`,
+  };
 }
 
 function getManyQuery(
@@ -76,26 +81,13 @@ function getManyQuery(
   modelName: string,
   action: string
 ) {
-  return `
-export const ${hookName} = <
-  T extends ${argsType},
-  U = Prisma.${modelName}GetPayload<T>,
-  C extends boolean = false
->({
+  return {
+    hook: `
+export const ${hookName} = ({
   query,
   count,
   options,
-}: {
-  count?: C;
-  query?: T;
-  options?: Omit<
-    UseQueryOptions<ResultType<U, C>, { error?: string }, ResultType<U, C>, QueryKey>,
-    "queryKey" | "queryFn"
-  >;
-} = {}): UseQueryResult<
-  ResultType<U, C>,
-  { error?: string }
-> & { key: QueryKey } => {
+} = {}) => {
   const key = ["${modelName}.${action}", query, options];
   const params = new URLSearchParams({
     ...(count ? { count: \`\${count}\` } : undefined),
@@ -115,7 +107,26 @@ export const ${hookName} = <
 
   return { ...result, key };
 };
-`;
+`,
+    type: `
+export declare const ${hookName} = <
+  T extends ${argsType},
+  U = Prisma.${modelName}GetPayload<T>,
+  C extends boolean = false
+>({
+  query,
+  count,
+  options,
+}?: {
+  count?: C;
+  query?: T;
+  options?: Omit<
+    UseQueryOptions<ResultType<U, C>, { error?: string }, ResultType<U, C>, QueryKey>,
+    "queryKey" | "queryFn"
+  >;
+}) => UseQueryResult<ResultType<U, C>, { error?: string }> & { key: QueryKey };
+`,
+  };
 }
 
 function getMutation(
@@ -129,14 +140,11 @@ function getMutation(
     ? "{ count: number }"
     : `Prisma.${modelName}GetPayload<${argsType}>`;
 
-  return `
-export const ${hookName} = (): UseMutationResult<
-  ${returnType} & { error?: string },
-  never,
-  ${argsType}
-> => {
+  return {
+    hook: `
+export const ${hookName} = () => {
   return useMutation(
-    async (mutation: ${argsType}) =>
+    async (mutation) =>
       fetch("/api/${lowercaseFirstLetter(modelName)}/${action}", {
         body: JSON.stringify(mutation),
         method: "POST",
@@ -145,7 +153,15 @@ export const ${hookName} = (): UseMutationResult<
         .catch()
   );
 };
-`;
+`,
+    type: `
+export declare const ${hookName} = () => UseMutationResult<
+  ${returnType} & { error?: string },
+  never,
+  ${argsType}
+>;
+`,
+  };
 }
 
 const generateCustomHook = (
@@ -196,24 +212,32 @@ const generateCustomHooksForModels = (models: string[]) => {
   ];
 
   let hooks = "";
+  let types = "";
+  let tmp: { hook: string; type: string };
 
   for (const model of models) {
     for (const action of queryActions) {
-      hooks += generateCustomHook(model, action, false);
+      tmp = generateCustomHook(model, action, false);
+      hooks += tmp.hook;
+      types += tmp.type;
     }
     for (const action of mutationActions) {
-      hooks += generateCustomHook(model, action, true);
+      tmp = generateCustomHook(model, action, true);
+      hooks += tmp.hook;
+      types += tmp.type;
     }
   }
 
-  return hooks;
+  return { hooks, types };
 };
 
-const imports = `import { QueryKey, UseQueryOptions, useQuery, useMutation, UseMutationResult, UseQueryResult } from "react-query";
+const tsImports = `import { QueryKey, UseQueryOptions, UseMutationResult, UseQueryResult } from "react-query";
 import { Prisma } from "@prisma/client";
 `;
+const jsImports = `import { useQuery, useMutation } from "react-query";
+`;
 
-const helpers = `
+const tsHelpers = `
 type ResultType<T, C extends boolean> = C extends true
   ? { data: T[]; _count: number }
   : T[];
@@ -222,11 +246,15 @@ type ResultType<T, C extends boolean> = C extends true
 (async () => {
   const schema = fs.readFileSync("prisma/schema.prisma", "utf-8");
   const models = extractModels(schema);
-  const generatedHooks = generateCustomHooksForModels(models);
+  const { hooks, types } = generateCustomHooksForModels(models);
 
   fs.writeFileSync(
-    path.join(__dirname, "..", "src", "hooks.ts"),
-    imports + helpers + generatedHooks
+    path.join(__dirname, "..", "dist", "hooks.js"),
+    jsImports + hooks
+  );
+  fs.writeFileSync(
+    path.join(__dirname, "..", "dist", "hooks.d.ts"),
+    tsImports + tsHelpers + types
   );
 
   // eslint-disable-next-line no-console

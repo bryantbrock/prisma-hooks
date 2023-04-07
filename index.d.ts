@@ -1,2 +1,2 @@
-export * from "./src/handler";
-export * from "./src/hooks";
+export * from "./dist/handler";
+export * from "./dist/hooks";
