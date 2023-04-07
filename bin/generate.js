@@ -1,21 +1,21 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 const fs = require("fs");
 const path = require("path");
 
-function lowercaseFirstLetter(str: string): string {
+function lowercaseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
 
-function startCase(lowercaseFirstLetterString: string): string {
+function startCase(lowercaseFirstLetterString) {
   const result = lowercaseFirstLetterString.replace(/([A-Z])/g, " $1");
   return result.charAt(0).toUpperCase() + result.slice(1).replace(/\s+/g, "");
 }
 
-function extractModels(schema: string): string[] {
+function extractModels(schema) {
   const modelRegex = /model\s+(\w+)/g;
-  const modelNames: string[] = [];
-  let match: RegExpExecArray | null;
+  const modelNames = [];
+  let match;
 
   while ((match = modelRegex.exec(schema)) !== null) {
     modelNames.push(match[1]);
@@ -31,12 +31,7 @@ function extractModels(schema: string): string[] {
   );
 }
 
-function getSingleQuery(
-  hookName: string,
-  argsType: string,
-  modelName: string,
-  action: string
-) {
+function getSingleQuery(hookName, argsType, modelName, action) {
   return {
     hook: `
 export const ${hookName} = ({ query, options } = {}) => {
@@ -75,12 +70,7 @@ export declare const ${hookName} = <
   };
 }
 
-function getManyQuery(
-  hookName: string,
-  argsType: string,
-  modelName: string,
-  action: string
-) {
+function getManyQuery(hookName, argsType, modelName, action) {
   return {
     hook: `
 export const ${hookName} = ({
@@ -129,13 +119,7 @@ export declare const ${hookName} = <
   };
 }
 
-function getMutation(
-  hookName: string,
-  argsType: string,
-  modelName: string,
-  action: string,
-  isMany: boolean
-) {
+function getMutation(hookName, argsType, modelName, action, isMany) {
   const returnType = isMany
     ? "{ count: number }"
     : `Prisma.${modelName}GetPayload<${argsType}>`;
@@ -164,11 +148,7 @@ export declare const ${hookName} = () => UseMutationResult<
   };
 }
 
-const generateCustomHook = (
-  modelName: string,
-  action: string,
-  isMutation: boolean
-) => {
+const generateCustomHook = (modelName, action, isMutation) => {
   const isMany = action.includes("Many");
   const isCount = action === "count";
   const isAggregate = action === "aggregate";
@@ -191,7 +171,7 @@ const generateCustomHook = (
   return getSingleQuery(hookName, argsType, modelName, action);
 };
 
-const generateCustomHooksForModels = (models: string[]) => {
+const generateCustomHooksForModels = (models) => {
   const queryActions = [
     "findUnique",
     "findFirst",
@@ -213,7 +193,7 @@ const generateCustomHooksForModels = (models: string[]) => {
 
   let hooks = "";
   let types = "";
-  let tmp: { hook: string; type: string };
+  let tmp;
 
   for (const model of models) {
     for (const action of queryActions) {
