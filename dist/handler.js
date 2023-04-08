@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const messages = {
+    P2002: "Name must be unique.",
+};
 export const handlePrismaQuery = (params) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -31,7 +34,7 @@ export const handlePrismaQuery = (params) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         // @ts-ignore
-        const message = (_a = messages[error.code]) !== null && _a !== void 0 ? _a : "Something went wrong.";
+        const message = (_a = messages[error === null || error === void 0 ? void 0 : error.code]) !== null && _a !== void 0 ? _a : "Something went wrong.";
         // @ts-ignore
         return { error: message };
     }

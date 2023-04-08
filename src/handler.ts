@@ -28,6 +28,10 @@ type HandlePrismaQueryResult<T> = T extends undefined
 
 type Unpromise<T> = T extends Promise<infer U> ? U : T;
 
+const messages = {
+  P2002: "Name must be unique.",
+};
+
 export const handlePrismaQuery = async <
   T extends ModelName,
   A extends keyof PrismaClient[T]
@@ -65,7 +69,7 @@ export const handlePrismaQuery = async <
     }
   } catch (error) {
     // @ts-ignore
-    const message = messages[error.code] ?? "Something went wrong.";
+    const message = messages[error?.code] ?? "Something went wrong.";
 
     // @ts-ignore
     return { error: message };
