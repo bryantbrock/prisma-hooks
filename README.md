@@ -1,4 +1,5 @@
 # 🪝 Prisma Hooks
+![Build](https://github.com/bryantbrock/prisma-hooks/actions/workflows/publish.yaml/badge.svg)
 
 100% type-safe, generated react-query hooks for quering any model in your prisma-managed database.
 
