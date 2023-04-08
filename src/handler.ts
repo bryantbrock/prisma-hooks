@@ -13,6 +13,7 @@ type HandlePrismaQueryParams<
     : never;
   db: PrismaClient;
   count?: boolean;
+  debug?: boolean;
 };
 
 type HandlePrismaQueryCountResult<T> = {
@@ -68,6 +69,10 @@ export const handlePrismaQuery = async <
       return data;
     }
   } catch (error) {
+    if (params.debug) {
+      console.error(error);
+    }
+
     // @ts-ignore
     const message = messages[error?.code] ?? "Something went wrong.";
 
