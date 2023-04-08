@@ -14,7 +14,7 @@ yarn add prisma-hooks
 Or via npm
 
 ```
-npm i prisma-client-hooks
+npm i prisma-hooks
 ```
 
 ## Quickstart
@@ -31,7 +31,7 @@ npx prisma-hooks generate
 // server.ts
 
 import { prisma } from "services/prisma";
-import { hamdlePrismaQuery } from "prisma-client-hooks";
+import { hamdlePrismaQuery } from "prisma-hooks";
 ...
 
 // Handles requests like the following `/:model/:action?count=<boolean>`
