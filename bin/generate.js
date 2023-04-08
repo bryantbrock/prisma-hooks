@@ -54,16 +54,16 @@ export const ${hookName} = ({ query, options } = {}) => {
 };
 `,
     type: `
-export declare const ${hookName} = <
+export declare function ${hookName}<
   T extends ${argsType},
   U = Prisma.${modelName}GetPayload<T>
->(params: {
+>(params?: {
     query?: T;
     options?: Omit<
     UseQueryOptions<U, { error?: string }, U, QueryKey>,
     "queryKey" | "queryFn"
     >;
-} | undefined): UseQueryResult<U, { error?: string }> & { key: QueryKey };
+}): UseQueryResult<U, { error?: string }> & { key: QueryKey };
 `,
   };
 }
@@ -101,14 +101,14 @@ export declare function ${hookName}<
   T extends ${argsType},
   U = Prisma.${modelName}GetPayload<T>,
   C extends boolean = false
->(params: {
+>(params?: {
   count?: C;
   query?: T;
   options?: Omit<
     UseQueryOptions<ResultType<U, C>, { error?: string }, ResultType<U, C>, QueryKey>,
     "queryKey" | "queryFn"
   >;
-} | undefined): UseQueryResult<ResultType<U, C>, { error?: string }> & { key: QueryKey };
+}): UseQueryResult<ResultType<U, C>, { error?: string }> & { key: QueryKey };
 `,
   };
 }
