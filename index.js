@@ -1,2 +1,2 @@
-export * from "./dist/handler";
-export * from "./dist/hooks";
+export * from "./dist/handler.js";
+export * from "./dist/hooks.js";
