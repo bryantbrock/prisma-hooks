@@ -1,4 +1,4 @@
-# 🪝 Prisma Client Hooks
+# 🪝 Prisma Hooks
 
 100% type-safe, generated react-query hooks for quering any model in your prisma-managed database.
 
@@ -7,7 +7,7 @@
 > :warning: Requires `@prisma/client` and `react-query` to be installed
 
 ```
-yarn add prisma-client-hooks
+yarn add prisma-hooks
 ```
 
 Or via npm
