@@ -22,7 +22,7 @@ npm i prisma-client-hooks
 1. Generate your 100% type-safe custom hooks
 
 ```
-npx prisma-client-hooks generate path/to/output/file.ts
+npx prisma-hooks generate
 ```
 
 2. Add your api handler (any node environment works)
