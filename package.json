@@ -1,6 +1,6 @@
 {
   "name": "prisma-hooks",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "description": "100% type-safe, generated react-query hooks for quering any model in your prisma-managed database.",
   "main": "index.js",
