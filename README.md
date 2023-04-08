@@ -73,7 +73,6 @@ const { data: { data: posts = [], _count = 0 } = {}, isLoading } =
 const { data: posts = [], isLoading } = useFindManyPosts({
   query: // ...
   options: // ...
-  count: true,
 });
 ```
 
