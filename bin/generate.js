@@ -57,16 +57,13 @@ export const ${hookName} = ({ query, options } = {}) => {
 export declare const ${hookName} = <
   T extends ${argsType},
   U = Prisma.${modelName}GetPayload<T>
->({
-  query,
-  options,
-  }?: {
+>(params: {
     query?: T;
     options?: Omit<
     UseQueryOptions<U, { error?: string }, U, QueryKey>,
     "queryKey" | "queryFn"
     >;
-}) => UseQueryResult<U, { error?: string }> & { key: QueryKey };
+} | undefined): UseQueryResult<U, { error?: string }> & { key: QueryKey };
 `,
   };
 }
@@ -100,22 +97,18 @@ export const ${hookName} = ({
 };
 `,
     type: `
-export declare const ${hookName} = <
+export declare function ${hookName}<
   T extends ${argsType},
   U = Prisma.${modelName}GetPayload<T>,
   C extends boolean = false
->({
-  query,
-  count,
-  options,
-}?: {
+>(params: {
   count?: C;
   query?: T;
   options?: Omit<
     UseQueryOptions<ResultType<U, C>, { error?: string }, ResultType<U, C>, QueryKey>,
     "queryKey" | "queryFn"
   >;
-}) => UseQueryResult<ResultType<U, C>, { error?: string }> & { key: QueryKey };
+} | undefined): UseQueryResult<ResultType<U, C>, { error?: string }> & { key: QueryKey };
 `,
   };
 }
@@ -140,7 +133,7 @@ export const ${hookName} = () => {
 };
 `,
     type: `
-export declare const ${hookName} = () => UseMutationResult<
+export declare function ${hookName}(): UseMutationResult<
   ${returnType} & { error?: string },
   never,
   ${argsType}
