@@ -4,12 +4,13 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
-const argv = yargs.option("baseUrl", {
+const { argv } = yargs(hideBin(process.argv)).option("baseUrl", {
   alias: "b",
-  describe: "The base url for each generated query and mutation",
   type: "string",
-}).argv;
+  description: "The base URL to use",
+});
 
 function lowercaseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
