@@ -3,6 +3,13 @@
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import yargs from "yargs";
+
+const argv = yargs.option("baseUrl", {
+  alias: "b",
+  describe: "The base url for each generated query and mutation",
+  type: "string",
+}).argv;
 
 function lowercaseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
@@ -41,7 +48,9 @@ export const ${hookName} = ({ query, options } = {}) => {
   const result = useQuery(
     key,
     () =>
-      fetch("/api/${lowercaseFirstLetter(modelName)}/${action}", {
+      fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
+      modelName
+    )}/${action}", {
         method: "POST",
         ...(query && { body: JSON.stringify(query) }),
       })
@@ -84,7 +93,9 @@ export const ${hookName} = ({
   const result = useQuery(
     key,
     () =>
-      fetch("/api/${lowercaseFirstLetter(modelName)}/${action}?" + params, {
+      fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
+      modelName
+    )}/${action}?" + params, {
         method: "POST",
         ...(query && { body: JSON.stringify(query) }),
       })
@@ -123,7 +134,9 @@ function getMutation(hookName, argsType, modelName, action, isMany) {
 export const ${hookName} = () => {
   return useMutation(
     async (mutation) =>
-      fetch("/api/${lowercaseFirstLetter(modelName)}/${action}", {
+      fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
+      modelName
+    )}/${action}", {
         body: JSON.stringify(mutation),
         method: "POST",
       })
