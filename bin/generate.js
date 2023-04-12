@@ -45,7 +45,7 @@ function getSingleQuery(hookName, argsType, modelName, action) {
 export const ${hookName} = ({ query, options } = {}) => {
   const key = ["${modelName}.${action}", query, options];
 
-  const result = useQuery(
+  const { data, ...result } = useQuery(
     key,
     () =>
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
@@ -55,11 +55,16 @@ export const ${hookName} = ({ query, options } = {}) => {
         ...(query && { body: JSON.stringify(query) }),
       })
         .then((res) => res.json())
-        .catch(),
+        .then((res) => {
+          if (res.error) {
+            throw new Error(res.error);
+          }
+          return response;
+        }),
     options
   );
 
-  return { ...result, key };
+  return { data: data?.data, ...result, key };
 };
 `,
     type: `
@@ -90,7 +95,7 @@ export const ${hookName} = ({
     ...(count ? { count: \`\${count}\` } : undefined),
   });
 
-  const result = useQuery(
+  const { data, ...result } = useQuery(
     key,
     () =>
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
@@ -100,11 +105,16 @@ export const ${hookName} = ({
         ...(query && { body: JSON.stringify(query) }),
       })
         .then((res) => res.json())
-        .catch(),
+        .then((res) => {
+          if (res.error) {
+            throw new Error(res.error);
+          }
+          return response;
+        }),
     options
   );
 
-  return { ...result, key };
+  return { data: data?.data, ...result, key };
 };
 `,
     type: `
