@@ -46,7 +46,7 @@ function getSingleQuery(hookName, argsType, modelName, action) {
 export const ${hookName} = ({ query, options } = {}) => {
   const key = ["${modelName}.${action}", query, options];
 
-  const { data, ...result } = useQuery(
+  const result = useQuery(
     key,
     () =>
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
@@ -65,7 +65,7 @@ export const ${hookName} = ({ query, options } = {}) => {
     options
   );
 
-  return { data: data?.data, ...result, key };
+  return { ...result, key };
 };
 `,
     type: `
@@ -96,7 +96,7 @@ export const ${hookName} = ({
     ...(count ? { count: \`\${count}\` } : undefined),
   });
 
-  const { data, ...result } = useQuery(
+  const result = useQuery(
     key,
     () =>
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
@@ -115,7 +115,7 @@ export const ${hookName} = ({
     options
   );
 
-  return { data: data?.data, ...result, key };
+  return { ...result, key };
 };
 `,
     type: `
