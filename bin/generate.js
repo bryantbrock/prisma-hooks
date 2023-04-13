@@ -60,7 +60,7 @@ export const ${hookName} = ({ query, options } = {}) => {
           if (res.error) {
             throw new Error(res.error);
           }
-          return response;
+          return res;
         }),
     options
   );
@@ -110,7 +110,7 @@ export const ${hookName} = ({
           if (res.error) {
             throw new Error(res.error);
           }
-          return response;
+          return res;
         }),
     options
   );
