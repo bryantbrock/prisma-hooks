@@ -75,12 +75,12 @@ export declare function ${hookName}<
 >(params?: {
     query?: T;
     options?: Omit<
-    UseQueryOptions<${
-      isCount ? "number" : "U"
-    }, { error?: string }, U, QueryKey>,
+    UseQueryOptions<U, { error?: string }, U, QueryKey>,
     "queryKey" | "queryFn"
     >;
-}): UseQueryResult<U, { error?: string }> & { key: QueryKey };
+}): UseQueryResult<${
+      isCount ? "number" : "U"
+    }, { error?: string }> & { key: QueryKey };
 `,
   };
 }
