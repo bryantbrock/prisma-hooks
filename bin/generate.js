@@ -175,7 +175,13 @@ const generateCustomHook = (modelName, action, isMutation) => {
   const displayAction = startCase(action);
   const hookName = `use${displayAction}${isMany ? `${modelName}s` : modelName}`;
   const argsType = `Prisma.${modelName}${
-    isCount || isAggregate || isGroupBy ? "" : displayAction
+    isCount
+      ? "Count"
+      : isAggregate
+      ? "Aggregate"
+      : isGroupBy
+      ? "GroupBy"
+      : displayAction
   }Args`;
 
   if (isMutation) {
