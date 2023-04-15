@@ -40,7 +40,7 @@ function extractModels(schema) {
   );
 }
 
-function getSingleQuery(hookName, argsType, modelName, action) {
+function getSingleQuery(hookName, argsType, modelName, action, { isCount }) {
   return {
     hook: `
 export const ${hookName} = ({ query, options } = {}) => {
@@ -75,7 +75,9 @@ export declare function ${hookName}<
 >(params?: {
     query?: T;
     options?: Omit<
-    UseQueryOptions<U, { error?: string }, U, QueryKey>,
+    UseQueryOptions<${
+      isCount ? "number" : "U"
+    }, { error?: string }, U, QueryKey>,
     "queryKey" | "queryFn"
     >;
 }): UseQueryResult<U, { error?: string }> & { key: QueryKey };
@@ -192,7 +194,7 @@ const generateCustomHook = (modelName, action, isMutation) => {
     return getManyQuery(hookName, argsType, modelName, action);
   }
 
-  return getSingleQuery(hookName, argsType, modelName, action);
+  return getSingleQuery(hookName, argsType, modelName, action, { isCount });
 };
 
 const generateCustomHooksForModels = (models) => {
