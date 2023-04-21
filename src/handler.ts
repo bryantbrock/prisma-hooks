@@ -8,9 +8,7 @@ type HandlePrismaQueryParams<
 > = {
   model: T;
   action: A;
-  query?: PrismaClient[T][A] extends (...args: any) => any
-    ? Parameters<PrismaClient[T][A]>[0]
-    : never;
+  query?: Parameters<PrismaClient[T][A]>[0] & { where?: any };
   db: PrismaClient;
   count?: boolean;
   debug?: boolean;
@@ -29,10 +27,6 @@ type HandlePrismaQueryResult<T> = T extends undefined
 
 type Unpromise<T> = T extends Promise<infer U> ? U : T;
 
-const messages = {
-  P2002: "Name must be unique.",
-};
-
 export const handlePrismaQuery = async <
   T extends ModelName,
   A extends keyof PrismaClient[T]
@@ -47,36 +41,21 @@ export const handlePrismaQuery = async <
     >
   >
 > => {
-  try {
-    const { model, action, query, db, count } = params;
-    const queryFn = query
-      ? // @ts-ignore
-        () => db[model][action](query)
-      : // @ts-ignore
-        () => db[model][action]();
+  const { model, action, query, db, count } = params;
+  const queryFn = query
+    ? () => db[model][action](query)
+    : () => db[model][action]();
 
-    if (count) {
-      const [_count, data] = await db.$transaction([
-        // @ts-ignore
-        db[model].count(query?.where ? { where: query.where } : undefined),
-        queryFn(),
-      ]);
+  if (count) {
+    const [_count, data] = await db.$transaction([
+      db[model].count(query?.where ? { where: query.where } : undefined),
+      queryFn(),
+    ]);
 
-      return { _count, data } as HandlePrismaQueryResult<any>;
-    } else {
-      const data = await queryFn();
+    return { _count, data } as HandlePrismaQueryResult<any>;
+  } else {
+    const data = await queryFn();
 
-      return data;
-    }
-  } catch (error) {
-    if (params.debug) {
-      console.error(error);
-    }
-
-    // @ts-ignore
-    const message = messages[error?.code] ?? "Something went wrong.";
-
-    // @ts-ignore
-    return { error: message };
+    return data;
   }
 };
