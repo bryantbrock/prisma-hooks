@@ -3,9 +3,12 @@ type ModelName = keyof PrismaClient;
 type HandlePrismaQueryParams<T extends ModelName, A extends keyof PrismaClient[T]> = {
     model: T;
     action: A;
-    query?: PrismaClient[T][A] extends (...args: any) => any ? Parameters<PrismaClient[T][A]>[0] : never;
+    query?: Parameters<PrismaClient[T][A]>[0] & {
+        where?: any;
+    };
     db: PrismaClient;
     count?: boolean;
+    debug?: boolean;
 };
 type HandlePrismaQueryCountResult<T> = {
     _count: number;

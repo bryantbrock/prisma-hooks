@@ -7,36 +7,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const messages = {
-    P2002: "Name must be unique.",
-};
 export const handlePrismaQuery = (params) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    try {
-        const { model, action, query, db, count } = params;
-        const queryFn = query
-            ? // @ts-ignore
-                () => db[model][action](query)
-            : // @ts-ignore
-                () => db[model][action]();
-        if (count) {
-            const [_count, data] = yield db.$transaction([
-                // @ts-ignore
-                db[model].count((query === null || query === void 0 ? void 0 : query.where) ? { where: query.where } : undefined),
-                queryFn(),
-            ]);
-            return { _count, data };
-        }
-        else {
-            const data = yield queryFn();
-            return data;
-        }
+    const { model, action, query, db, count } = params;
+    const queryFn = query
+        ? () => db[model][action](query)
+        : () => db[model][action]();
+    if (count) {
+        const [_count, data] = yield db.$transaction([
+            db[model].count((query === null || query === void 0 ? void 0 : query.where) ? { where: query.where } : undefined),
+            queryFn(),
+        ]);
+        return { _count, data };
     }
-    catch (error) {
-        // @ts-ignore
-        const message = (_a = messages[error === null || error === void 0 ? void 0 : error.code]) !== null && _a !== void 0 ? _a : "Something went wrong.";
-        // @ts-ignore
-        return { error: message };
+    else {
+        const data = yield queryFn();
+        return data;
     }
 });
 //# sourceMappingURL=handler.js.map
