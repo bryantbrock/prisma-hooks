@@ -53,6 +53,7 @@ export const ${hookName} = ({ query, options } = {}) => {
       modelName
     )}/${action}", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         ...(query && { body: JSON.stringify(query) }),
       })
         .then((res) => res.json())
@@ -105,6 +106,7 @@ export const ${hookName} = ({
       modelName
     )}/${action}?" + params, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         ...(query && { body: JSON.stringify(query) }),
       })
         .then((res) => res.json())
@@ -152,6 +154,7 @@ export const ${hookName} = () => {
     )}/${action}", {
         body: JSON.stringify(mutation),
         method: "POST",
+        headers: { "Content-Type": "application/json" },
       })
         .then((res) => res.json())
         .catch()
