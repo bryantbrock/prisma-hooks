@@ -52,8 +52,7 @@ export const handler(req) => {
 }
 ```
 
-3. Use your hooks in your client
-   A mutation action (like `createMany`) is a `useMutation` from `react-query` while a query action (like `findMany`) is a `useQuery`.
+3. Use your hooks in your client! A mutation action (like `createMany`) is a `useMutation` from `react-query` while a query action (like `findMany`) is a `useQuery`.
 
 ```ts
 // With `count` included
