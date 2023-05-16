@@ -58,7 +58,7 @@ export const ${hookName} = ({ query, options } = {}) => {
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.error) {
+          if (res?.error) {
             throw new Error(res.error);
           }
           return res;
@@ -111,7 +111,7 @@ export const ${hookName} = ({
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.error) {
+          if (res?.error) {
             throw new Error(res.error);
           }
           return res;
