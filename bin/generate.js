@@ -54,7 +54,7 @@ export const ${hookName} = ({ query, options } = {}) => {
     )}/${action}", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        ...(query && { body: JSON.stringify(query) }),
+        ...(query && { body: serializePrismaQuery(query) }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -107,7 +107,7 @@ export const ${hookName} = ({
     )}/${action}?" + params, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        ...(query && { body: JSON.stringify(query) }),
+        ...(query && { body: serializePrismaQuery(query) }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -152,7 +152,7 @@ export const ${hookName} = () => {
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
       modelName
     )}/${action}", {
-        body: JSON.stringify(mutation),
+        body: serializePrismaQuery(mutation),
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })
@@ -244,6 +244,7 @@ const tsImports = `import { QueryKey, UseQueryOptions, UseMutationResult, UseQue
 import { Prisma } from "@prisma/client";
 `;
 const jsImports = `import { useQuery, useMutation } from "react-query";
+import { serializePrismaQuery } from "./utils";
 `;
 
 const tsHelpers = `
