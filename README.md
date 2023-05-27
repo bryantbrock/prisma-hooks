@@ -105,3 +105,6 @@ For some reason, development bundlers like Webpack will "forget" that the hooks 
 * `useDeleteManyUsers`
 * `useCreateUser`
 * `useCreateManyUsers`
+
+## Contribution
+We love contributions! Please feel free to create a fork for making any changes you see fit, this is still a work in progress.
