@@ -91,7 +91,7 @@ A mutation action (like `createMany`) is a `useMutation` from `react-query` whil
 For some reason, development bundlers like Webpack will "forget" that the hooks were generated. If running a Next.js application, for example, you may run into the error `TypeError: (0 , prisma_hooks__WEBPACK_IMPORTED_MODULE_2__.<hook>) is not a function`. VSCode also forgets sometimes. To resolve, simply run `npx prisma-hooks generate` again or delete the `.next` folder and restart your server. In other words, clear your development caches and the generated hooks will be working once again.
 
 ## API Reference
-* [`hamdlePrismaQuery`](https://github.com/bryantbrock/prisma-hooks/blob/main/src/handler.ts)
+* [`handlePrismaQuery`](https://github.com/bryantbrock/prisma-hooks/blob/main/src/handler.ts)
 * `useFindUniqueUser`
 * `useFindFirstUser`
 * `useFindManyUsers`
