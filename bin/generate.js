@@ -249,8 +249,8 @@ import { Prisma } from "@prisma/client";
 `;
 const jsImports = `import { useQuery, useMutation } from "react-query";
 import { useContext } from "react";
-import { serializePrismaQuery } from "./utils";
-import { UserIdContext } from "./contexts/UserIdContext";
+import { serializePrismaQuery } from "./utils.js";
+import { UserIdContext } from "./contexts/UserIdContext.js";
 `;
 
 const tsHelpers = `
