@@ -44,6 +44,7 @@ function getSingleQuery(hookName, argsType, modelName, action, { isCount }) {
   return {
     hook: `
 export const ${hookName} = ({ query, options } = {}) => {
+  const userId = useContext(UserIdContext);
   const key = ["${modelName}.${action}", query, options];
 
   const result = useQuery(
@@ -53,7 +54,7 @@ export const ${hookName} = ({ query, options } = {}) => {
       modelName
     )}/${action}", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-User-Id": userId },
         ...(query && { body: serializePrismaQuery(query) }),
       })
         .then((res) => res.json())
@@ -94,6 +95,7 @@ export const ${hookName} = ({
   count,
   options,
 } = {}) => {
+  const userId = useContext(UserIdContext);
   const key = ["${modelName}.${action}", query, options];
   const params = new URLSearchParams({
     ...(count ? { count: \`\${count}\` } : undefined),
@@ -106,7 +108,7 @@ export const ${hookName} = ({
       modelName
     )}/${action}?" + params, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-User-Id": userId },
         ...(query && { body: serializePrismaQuery(query) }),
       })
         .then((res) => res.json())
@@ -147,6 +149,8 @@ function getMutation(hookName, argsType, modelName, action, isMany) {
   return {
     hook: `
 export const ${hookName} = () => {
+  const userId = useContext(UserIdContext);
+
   return useMutation(
     async (mutation) =>
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
@@ -154,7 +158,7 @@ export const ${hookName} = () => {
     )}/${action}", {
         body: serializePrismaQuery(mutation),
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-User-Id": userId },
       })
         .then((res) => res.json())
         .catch()
@@ -244,7 +248,9 @@ const tsImports = `import { QueryKey, UseQueryOptions, UseMutationResult, UseQue
 import { Prisma } from "@prisma/client";
 `;
 const jsImports = `import { useQuery, useMutation } from "react-query";
+import { useContext } from "react";
 import { serializePrismaQuery } from "./utils";
+import { UserIdContext } from "./contexts/UserIdContext";
 `;
 
 const tsHelpers = `
