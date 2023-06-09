@@ -44,7 +44,7 @@ function getSingleQuery(hookName, argsType, modelName, action, { isCount }) {
   return {
     hook: `
 export const ${hookName} = ({ query, options } = {}) => {
-  const userId = useContext(UserIdContext);
+  const context = useContext(Context);
   const key = ["${modelName}.${action}", query, options];
 
   const result = useQuery(
@@ -54,8 +54,8 @@ export const ${hookName} = ({ query, options } = {}) => {
       modelName
     )}/${action}", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-User-Id": userId },
-        ...(query && { body: serializePrismaQuery(query) }),
+        headers: { "Content-Type": "application/json" },
+        ...(query && { body: serializePrismaQuery({ query, context }) }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -95,7 +95,7 @@ export const ${hookName} = ({
   count,
   options,
 } = {}) => {
-  const userId = useContext(UserIdContext);
+  const context = useContext(Context);
   const key = ["${modelName}.${action}", query, options];
   const params = new URLSearchParams({
     ...(count ? { count: \`\${count}\` } : undefined),
@@ -108,8 +108,8 @@ export const ${hookName} = ({
       modelName
     )}/${action}?" + params, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-User-Id": userId },
-        ...(query && { body: serializePrismaQuery(query) }),
+        headers: { "Content-Type": "application/json" },
+        ...(query && { body: serializePrismaQuery({ query, context }) }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -149,16 +149,16 @@ function getMutation(hookName, argsType, modelName, action, isMany) {
   return {
     hook: `
 export const ${hookName} = () => {
-  const userId = useContext(UserIdContext);
+  const context = useContext(Context);
 
   return useMutation(
-    async (mutation) =>
+    async (query) =>
       fetch("${argv.baseUrl ?? "/api"}/${lowercaseFirstLetter(
       modelName
     )}/${action}", {
-        body: serializePrismaQuery(mutation),
+        body: serializePrismaQuery({ query, context }),
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-User-Id": userId },
+        headers: { "Content-Type": "application/json" },
       })
         .then((res) => res.json())
         .catch()
@@ -250,7 +250,7 @@ import { Prisma } from "@prisma/client";
 const jsImports = `import { useQuery, useMutation } from "react-query";
 import { useContext } from "react";
 import { serializePrismaQuery } from "./utils.js";
-import { UserIdContext } from "./contexts/UserIdContext.js";
+import { Context } from "./context.js";
 `;
 
 const tsHelpers = `

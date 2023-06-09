@@ -1,13 +1,7 @@
 // https://stackoverflow.com/questions/26540706/preserving-undefined-that-json-stringify-otherwise-removes
-/**
- * Serialize a JS object while preserving nested `undefined` values.
- */
 export function serializePrismaQuery(value, undefinedPlaceholder = "[undefined]") {
     return JSON.stringify(value, (_key, value) => value === undefined ? undefinedPlaceholder : value);
 }
-/**
- * Deserialize a JS object while preserving nested `undefined` values.
- */
 export function deserializePrismaQuery(value, undefinedPlaceholder = "[undefined]") {
     let result = JSON.parse(value);
     // Function to recursively replace `undefined` placeholders
